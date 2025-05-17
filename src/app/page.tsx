@@ -3,14 +3,25 @@ import { useState } from "react";
 import ChessCoachBoard from "../components/ChessCoachBoard";
 import ChessCoachChat from "../components/ChessCoachChat";
 import { Chess, Move } from "chess.js";
+import React from "react";
+
+function getRandomMove(game: Chess) {
+  const moves = game.moves({ verbose: true });
+  if (moves.length === 0) return null;
+  return moves[Math.floor(Math.random() * moves.length)];
+}
 
 export default function Home() {
   const [fen, setFen] = useState(() => new Chess().fen());
+  // IMPORTANT: Always include move notations (e.g., e5, Nf6) as standalone words in messages for clickable move tooltips to work.
   const [messages, setMessages] = useState([
-    { role: "ai", content: "I played e5 to control the center and open lines for my pieces." },
-    { role: "user", content: "Why not knight to f6 instead?" },
-    { role: "ai", content: "Playing Nf6 is also possible, but e5 is more classical and flexible at this stage." },
+    { role: "ai", content: "I played e5 to control the center and open lines for my pieces.", fenBeforeMove: new Chess().fen() },
+    { role: "user", content: "Why not Nf6 instead?" },
+    // The next AI message will have the FEN after Nf6 (once implemented)
   ]);
+
+  // --- New state for interactive move tooltips ---
+  const [selectedMoveInfo, setSelectedMoveInfo] = useState<{ san: string, fenBeforeMove: string } | null>(null); // { SAN string, FEN before the move }
 
   // Placeholder for future AI commentary API
   async function getAICommentary(move: Move): Promise<string> {
@@ -43,12 +54,36 @@ export default function Home() {
     return commentary;
   }
 
-  async function handleMove(move: Move) {
+  async function handleMove(move: Move, game: Chess) {
+    // Add commentary for the user's move
     const commentary = await getAICommentary(move);
     setMessages((msgs) => [
       ...msgs,
-      { role: "ai", content: commentary },
+      { role: "ai", content: commentary, fenBeforeMove: game.fen() },
     ]);
+
+    // Check if it's the AI's turn and play a move
+    if (game.turn() === "b" && !game.isGameOver()) {
+      setTimeout(async () => {
+        const aiMove = getRandomMove(game);
+        if (aiMove) {
+          game.move(aiMove);
+          setFen(game.fen());
+          // Add commentary for the AI's move
+          const aiCommentary = await getAICommentary(aiMove);
+          setMessages((msgs) => [
+            ...msgs,
+            { role: "ai", content: aiCommentary, fenBeforeMove: game.fen() },
+          ]);
+        }
+      }, 500); // Add a small delay for better user experience
+    }
+  }
+
+  // --- Handler for when a move notation is clicked in chat ---
+  function handleMoveClick(moveSan: string, fenBeforeMove: string) {
+    console.log("Move notation clicked:", moveSan, "FEN before move:", fenBeforeMove);
+    setSelectedMoveInfo({ san: moveSan, fenBeforeMove: fenBeforeMove });
   }
 
   return (
@@ -56,12 +91,21 @@ export default function Home() {
       {/* Left: Chessboard */}
       <div className="flex flex-1 items-center justify-center bg-muted md:border-r border-b md:border-b-0 border-border max-w-4xl w-full min-h-0">
         <div className="flex items-center justify-center w-full h-full min-h-0" style={{ maxWidth: 600, maxHeight: 600 }}>
-          <ChessCoachBoard fen={fen} setFen={setFen} onMove={handleMove} />
+          <ChessCoachBoard
+            fen={fen}
+            setFen={setFen}
+            onMove={handleMove}
+            selectedMoveSan={selectedMoveInfo?.san}
+          />
         </div>
       </div>
       {/* Right: Chat */}
       <div className="max-w-xl w-full h-full flex flex-col bg-background min-h-0">
-        <ChessCoachChat messages={messages} setMessages={setMessages} />
+        <ChessCoachChat
+          messages={messages}
+          setMessages={setMessages}
+          onMoveClick={(moveSan, anchor) => handleMoveClick(moveSan, /* Need to pass FEN from message here */ '')}
+        />
       </div>
     </div>
   );

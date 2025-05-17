@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ♟️ Chess Coach – Cursor for Chess
 
-## Getting Started
+**Learn chess through reasoning, not memorization.**
 
-First, run the development server:
+Chess Coach is an AI chess learning interface that helps you **understand the strategy behind every move** — like a live conversation with a grandmaster. Think of Cursor IDE but for chess.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Instead of just showing you the best move, Chess Coach explains:
+- Why that move was chosen
+- What plan it belongs to
+- What would’ve happened if you played something else
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎯 Purpose
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Most online chess tools teach by showing moves and engine scores. But these don't help learners build lasting intuition. Beginners are left asking:
+> *“Why that move?”*  
+> *“What did I miss?”*  
+> *“Why not this instead?”*
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Chess Coach changes that.
 
-## Learn More
+Inspired by **Cursor IDE**, Chess Coach gives you:
+- A side-by-side **chessboard** and **chat window**
+- Real-time move explanations after each move
+- The ability to ask *why*, *why not*, or *what if* — and see strategic answers in natural language
+- Clickable notation in chat — like `f6` — that triggers visual highlights and animations on the board
 
-To learn more about Next.js, take a look at the following resources:
+The goal: **Learn chess through strategic dialogue**, not rote repetition.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧠 Core Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🎓 Play against an AI and get reasoning after every move
+- 💬 Ask questions like “Why not knight to f6?” in the chat
+- 📍 Clickable move notation that shows board animations (e.g., tooltips and arrows)
+- 🧱 Designed like a coding IDE — minimal, focused, responsive
 
-## Deploy on Vercel
+## 🧰 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js 14** (App Router)
+- **Tailwind CSS** + **ShadCN UI**
+- **@react-chess/chessboard** for rendering the board
+- **chess.js** for game state management
+- **Stockfish.js** (WASM) as AI opponent
+- **Claude or OpenAI GPT-4** (planned) for chat explanations
+- **Framer Motion** for board tooltips and animations
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Status
+
+> This is an MVP in progress.  
+We’re focused on:
+- Connecting move context (FEN, PGN) to LLMs
+- Building the chat-reasoning flow
+- Making chess notation understandable and visual for beginners
+
+## 🛣️ Vision
+
+We believe chess is best learned by understanding plans, not memorizing lines.  
+Just like coding with Cursor IDE, **Chess Coach helps you think in systems**, not syntax.
+
+> Learn chess by talking to your game.  
+> That’s the future of chess education.
+
+## 📂 Structure (Planned)
+

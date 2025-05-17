@@ -104,7 +104,8 @@ export default function Home() {
         <ChessCoachChat
           messages={messages}
           setMessages={setMessages}
-          onMoveClick={(moveSan, anchor) => handleMoveClick(moveSan, /* Need to pass FEN from message here */ '')}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          onMoveClick={(moveSan, _anchor) => handleMoveClick(moveSan, /* Need to pass FEN from message here */ '')}
         />
       </div>
     </div>

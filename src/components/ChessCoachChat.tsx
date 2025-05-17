@@ -4,9 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+export interface ChatMessage {
+  role: string;
+  content: string;
+  type?: "chat" | "commentary";
+  fenBeforeMove?: string;
+}
+
 export default function ChessCoachChat({ messages, setMessages, onMoveClick }: {
-  messages: { role: string; content: string }[];
-  setMessages: React.Dispatch<React.SetStateAction<{ role: string; content: string }[]>>;
+  messages: ChatMessage[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
   onMoveClick: (moveSan: string, anchor: HTMLElement) => void;
 }) {
   const [input, setInput] = React.useState("");
@@ -101,17 +108,33 @@ export default function ChessCoachChat({ messages, setMessages, onMoveClick }: {
             key={i}
             className={`flex w-full ${msg.role === "ai" ? "justify-start" : "justify-end"}`}
           >
-            <Card
-              className={`max-w-[80%] px-4 py-2 text-sm shadow-sm"
-                ${msg.role === "ai"
-                  ? "bg-muted text-left self-start ml-2"
-                  : "bg-primary text-primary-foreground self-end mr-2"}
-              `}
-            >
-              <div className="whitespace-pre-line">
+            {msg.type === "commentary" ? (
+              // Render commentary directly without Card
+              <div
+                className={`max-w-[80%] px-2 py-1 text-sm italic opacity-75
+                  ${msg.role === "ai"
+                    ? "text-left self-start ml-4" // Adjust margin for non-carded messages
+                    : "text-right self-end mr-4" // Adjust margin for non-carded messages
+                  }
+                `}
+              >
                 {renderMessageWithMoves(msg.content, msg.role)}
               </div>
-            </Card>
+            ) : (
+              // Render regular chat messages within a Card
+              <Card
+                className={`max-w-[80%] px-4 py-2 text-sm shadow-sm
+                  ${msg.role === "ai"
+                    ? "bg-muted text-left self-start ml-2"
+                    : "bg-primary text-primary-foreground self-end mr-2"
+                  }
+                `}
+              >
+                <div className="whitespace-pre-line">
+                  {renderMessageWithMoves(msg.content, msg.role)}
+                </div>
+              </Card>
+            )}
           </div>
         ))}
         <div ref={messagesEndRef} />

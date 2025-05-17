@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import ChessCoachBoard from "../components/ChessCoachBoard";
-import ChessCoachChat from "../components/ChessCoachChat";
+import ChessCoachChat, { ChatMessage } from "../components/ChessCoachChat";
 import { Chess, Move } from "chess.js";
 import React from "react";
 
@@ -14,8 +14,8 @@ function getRandomMove(game: Chess) {
 export default function Home() {
   const [fen, setFen] = useState(() => new Chess().fen());
   // IMPORTANT: Always include move notations (e.g., e5, Nf6) as standalone words in messages for clickable move tooltips to work.
-  const [messages, setMessages] = useState([
-    { role: "ai", content: "I played e5 to control the center and open lines for my pieces.", fenBeforeMove: new Chess().fen() },
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { role: "ai", content: "I played e5 to control the center and open lines for my pieces.", fenBeforeMove: new Chess().fen(), type: 'commentary' },
     { role: "user", content: "Why not Nf6 instead?" },
     // The next AI message will have the FEN after Nf6 (once implemented)
   ]);
@@ -59,7 +59,7 @@ export default function Home() {
     const commentary = await getAICommentary(move);
     setMessages((msgs) => [
       ...msgs,
-      { role: "ai", content: commentary, fenBeforeMove: game.fen() },
+      { role: "ai", content: commentary, fenBeforeMove: game.fen(), type: 'commentary' },
     ]);
 
     // Check if it's the AI's turn and play a move
@@ -73,7 +73,7 @@ export default function Home() {
           const aiCommentary = await getAICommentary(aiMove);
           setMessages((msgs) => [
             ...msgs,
-            { role: "ai", content: aiCommentary, fenBeforeMove: game.fen() },
+            { role: "ai", content: aiCommentary, fenBeforeMove: game.fen(), type: 'commentary' },
           ]);
         }
       }, 500); // Add a small delay for better user experience

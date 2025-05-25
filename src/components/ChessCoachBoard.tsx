@@ -63,19 +63,20 @@ export default function ChessCoachBoard({ fen, setFen, onMove, selectedMoveSan }
   }, [fen, temporaryHighlightMove]);
 
   return (
-    <div className="flex items-center justify-center w-full h-full" style={{ position: "relative" }}>
-      <Chessboard
-        id="chesscoach-board"
-        position={fen}
-        onPieceDrop={onPieceDrop}
-        boardWidth={480}
-        areArrowsAllowed={true}
-        autoPromoteToQueen={true}
-        showBoardNotation={true}
-        customBoardStyle={{ boxShadow: "0 4px 32px 0 #0002", borderRadius: 12 }}
-        customSquareStyles={customSquareStyles}
-        animationDuration={selectedMoveSan ? 400 : 200}
-      />
+    <div className="flex items-center justify-center w-full h-full p-2 sm:p-4">
+      <div className="w-full max-w-[480px] aspect-square">
+        <Chessboard
+          id="chesscoach-board"
+          position={fen}
+          onPieceDrop={onPieceDrop}
+          areArrowsAllowed={true}
+          autoPromoteToQueen={true}
+          showBoardNotation={true}
+          customBoardStyle={{ boxShadow: "0 4px 32px 0 #0002", borderRadius: 12 }}
+          customSquareStyles={customSquareStyles}
+          animationDuration={selectedMoveSan ? 400 : 200}
+        />
+      </div>
     </div>
   );
 } 
